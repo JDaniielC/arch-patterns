@@ -5,6 +5,29 @@ import TopicCard from '@/components/ui/TopicCard'
 import { topics } from '@/lib/content'
 import { ArrowRight } from 'lucide-react'
 
+const glossaryItems = [
+  {
+    term: 'SNS',
+    description:
+      'Amazon Simple Notification Service powers the fanout demos by broadcasting a single domain event to queues, Lambdas, or HTTPS targets with managed retries.',
+  },
+  {
+    term: 'SQS',
+    description:
+      'Amazon Simple Queue Service underpins the choreography and async flows—producers enqueue work, consumers poll at their pace, and DLQs capture poison messages.',
+  },
+  {
+    term: 'ALB',
+    description:
+      'Application Load Balancer represents the entry tier in the microservices and hybrid sections, routing HTTP traffic by host or path to the right Next.js-backed service.',
+  },
+  {
+    term: 'CDC',
+    description:
+      'Change Data Capture streams database mutations (binlogs, Dynamo Streams, Debezium) into event-driven pipelines so services stay in sync without direct writes.',
+  },
+]
+
 export default function Home() {
   return (
     <div className="min-h-screen">
@@ -125,6 +148,39 @@ export default function Home() {
                 Learn when to use each pattern with clear guidelines and trade-off comparisons.
               </p>
             </motion.div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16 px-4">
+        <div className="max-w-5xl mx-auto">
+          <motion.h2
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-2xl font-bold mb-4 text-center"
+          >
+            Architecture Glossary
+          </motion.h2>
+          <p className="text-center text-text-secondary max-w-3xl mx-auto mb-10 text-sm">
+            Quickly map AWS building blocks to the diagrams and decision guides featured in this
+            project so you know where SNS fanout, SQS queues, ALBs, and CDC pipelines appear in the
+            walkthroughs.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {glossaryItems.map((item, index) => (
+              <motion.div
+                key={item.term}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.05 }}
+                className="rounded-xl border border-border bg-surface/60 p-6 shadow-sm"
+              >
+                <h3 className="text-lg font-semibold mb-2">{item.term}</h3>
+                <p className="text-sm text-text-secondary leading-relaxed">{item.description}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
