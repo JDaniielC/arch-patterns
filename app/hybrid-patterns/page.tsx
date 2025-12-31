@@ -67,6 +67,29 @@ const realWorldExamples = [
   },
 ]
 
+const cqrsGuidelines = [
+  {
+    title: 'Command Side',
+    description:
+      'Writes hit a slim aggregate that validates intent and appends events to the store. Think API → Lambda → Kinesis stream acting as the single writer.',
+  },
+  {
+    title: 'Query Side',
+    description:
+      'Independent projections subscribe to the event stream and build read models (DynamoDB, OpenSearch, PostgreSQL) optimized for UX latency or analytics.',
+  },
+  {
+    title: 'Consistency Contract',
+    description:
+      'Clients expect eventual consistency: commands return fast, while reads catch up via the projection lag you expose with status badges or webhooks.',
+  },
+  {
+    title: 'Operational Guardrails',
+    description:
+      'Backfill jobs and replay tools let you rebuild read models when schemas change, so keep replay scripts versioned alongside the diagram code.',
+  },
+]
+
 export default function HybridPatternsPage() {
   return (
     <TopicPageLayout topicId="hybrid-patterns">
@@ -203,6 +226,49 @@ export default function HybridPatternsPage() {
               language="typescript"
               title="event-sourcing.ts"
             />
+          </div>
+        </div>
+      </motion.section>
+
+      {/* CQRS Explanation */}
+      <motion.section
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.35 }}
+        className="rounded-xl border border-border bg-surface p-6"
+      >
+        <h2 className="text-xl font-semibold mb-4">How CQRS Fits In</h2>
+        <p className="text-text-secondary text-sm mb-6">
+          Command Query Responsibility Segregation (CQRS) splits the write and read responsibilities so each can scale
+          independently. In this project&apos;s diagrams, the command side owns the canonical event log while read models serve
+          dashboards, APIs, or search experiences tuned for their access patterns.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          {cqrsGuidelines.map((item) => (
+            <div key={item.title} className="p-4 rounded-lg bg-background">
+              <h3 className="font-medium mb-2">{item.title}</h3>
+              <p className="text-sm text-text-secondary leading-relaxed">{item.description}</p>
+            </div>
+          ))}
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-text-secondary">
+          <div>
+            <h3 className="font-semibold mb-2 text-green-500">Use CQRS when you need:</h3>
+            <ul className="space-y-1">
+              <li>Audit trails or time-travel queries</li>
+              <li>Different throughput/latency targets for writes vs reads</li>
+              <li>Multiple read APIs (GraphQL, search, analytics) from the same source of truth</li>
+              <li>Safe experimentation on projections without risking the write workload</li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="font-semibold mb-2 text-red-500">Avoid CQRS when:</h3>
+            <ul className="space-y-1">
+              <li>Your domain is CRUD-heavy with simple joins</li>
+              <li>The team cannot operate replay pipelines or versioned events</li>
+              <li>Consistency must be strictly immediate for all consumers</li>
+              <li>You lack tooling to observe projection lag and DLQs</li>
+            </ul>
           </div>
         </div>
       </motion.section>
